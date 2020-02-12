@@ -20,6 +20,9 @@ public class TouchControlsScript : MonoBehaviour
     private Quaternion rot;
 
     private float time;
+
+    private GameObject playerObj;
+    private Rigidbody2D playerRb;
    
 
 
@@ -31,7 +34,13 @@ public class TouchControlsScript : MonoBehaviour
     void Update()
     {
         SetToFingerPos();
-        speedNow = Mathf.SmoothDamp(speedNow, speed, ref refFloat, 0.7f);
+        speedNow = Mathf.SmoothDamp(speedNow, speed, ref refFloat, 2f);
+       
+    }
+
+    void FixedUpdate()
+    {
+        //MovePlayer();
     }
 
     void SetinitialReferences()
@@ -39,6 +48,8 @@ public class TouchControlsScript : MonoBehaviour
         cam = Camera.main;
         touchPos = transform.GetChild(0).gameObject;
         touchCenter = transform.GetChild(1).gameObject;
+        playerObj = GameObject.Find("Player");
+        playerRb = playerObj.GetComponent<Rigidbody2D>();
     }
 
 
@@ -53,7 +64,8 @@ public class TouchControlsScript : MonoBehaviour
             vectorToTarget = touchPos.transform.position - touchCenter.transform.position;
             angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
             q = Quaternion.AngleAxis(angle, Vector3.forward);
-            touchCenter.transform.rotation = Quaternion.Slerp(touchCenter.transform.rotation, q, Time.deltaTime*10f);
+            //touchCenter.transform.rotation = Quaternion.Slerp(touchCenter.transform.rotation, q, Time.deltaTime * 10f);
+            touchCenter.transform.rotation = q;
 
 
 
@@ -61,7 +73,17 @@ public class TouchControlsScript : MonoBehaviour
 
 
             CalculateSpeed();
+            MovePlayer();
         }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            speed = 0;
+            speedNow = 0;
+
+            //zero floats
+        }
+
     }
 
    
@@ -83,10 +105,16 @@ public class TouchControlsScript : MonoBehaviour
             {
                 speed += turnSize[i];
             }
-            speed = -(speed / (turnSize.Count));
+            speed = (speed / (turnSize.Count));
         
         
 
+    }
+
+
+    void MovePlayer() {
+        playerRb.AddTorque(20*speedNow, ForceMode2D.Force);
+        playerRb.angularVelocity = 30f;
     }
 
 
