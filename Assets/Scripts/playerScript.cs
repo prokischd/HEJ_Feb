@@ -17,7 +17,7 @@ public class playerScript : MonoBehaviour
         SetInitialReferences();
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
         spriteObj.transform.position = transform.position;
     }
@@ -35,10 +35,7 @@ public class playerScript : MonoBehaviour
             vectorToTarget = colPos - transform.position;
             angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
             q = Quaternion.AngleAxis(angle, Vector3.forward);
-            spriteObj.transform.rotation = Quaternion.Slerp(spriteObj.transform.rotation, q, Time.deltaTime * 10f);
-
-            Debug.Log(colPos);
-
+            spriteObj.transform.rotation = Quaternion.Slerp(spriteObj.transform.rotation, q, Time.deltaTime * 4f);
         }
 
     }
