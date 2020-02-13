@@ -7,6 +7,10 @@ public class TouchControlsScript : MonoBehaviour
     private GameObject touchPos;
     private GameObject touchCenter;
     private Camera cam;
+    public float maxCenreDistance = 0.1f;
+    private Vector2 refCentrePos;
+    public float maxAngularVelocity=120;
+    public float ControlEffect = 800;
 
     private Vector3 vectorToTarget;
     private float angle;
@@ -23,6 +27,8 @@ public class TouchControlsScript : MonoBehaviour
 
     private GameObject playerObj;
     private Rigidbody2D playerRb;
+
+    private Animator playerAnim;
    
 
 
@@ -34,13 +40,14 @@ public class TouchControlsScript : MonoBehaviour
     void Update()
     {
         SetToFingerPos();
-        speedNow = Mathf.SmoothDamp(speedNow, speed, ref refFloat, 2f);
-       
+        speedNow = Mathf.SmoothDamp(speedNow, speed, ref refFloat, 0.5f);
+        MoveToCentre();
     }
 
     void FixedUpdate()
     {
-        //MovePlayer();
+        //playerRb.angularVelocity = 30f;
+        MovePlayer();
     }
 
     void SetinitialReferences()
@@ -50,12 +57,35 @@ public class TouchControlsScript : MonoBehaviour
         touchCenter = transform.GetChild(1).gameObject;
         playerObj = GameObject.Find("Player");
         playerRb = playerObj.GetComponent<Rigidbody2D>();
+        playerAnim = playerObj.transform.parent.transform.GetChild(1).GetChild(0).GetComponent<Animator>();
+        for (int i = 0; i < turnAngles.Count; i++)
+        {
+            turnAngles[i] = 0;
+        }
+        for (int l = 0; l < turnSize.Count; l++)
+        {
+            turnSize[l] = 0;
+        }
+
     }
 
 
+
+
+    void MoveToCentre() {
+        float distance = Vector2.Distance(touchCenter.transform.position, touchPos.transform.position);
+        if (distance>maxCenreDistance)
+        {
+            touchCenter.transform.position = Vector2.SmoothDamp(touchCenter.transform.position, touchPos.transform.position, ref refCentrePos, 0.05f);
+        }
+    }
+
     void SetToFingerPos()
     {
-
+        if (Input.GetMouseButtonDown(0))
+        {
+            speed = speedNow;
+        }
             if (Input.GetMouseButton(0))
         {
             touchPos.transform.position=cam.ScreenToWorldPoint(Input.mousePosition);
@@ -63,7 +93,7 @@ public class TouchControlsScript : MonoBehaviour
 
             vectorToTarget = touchPos.transform.position - touchCenter.transform.position;
             angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
-            q = Quaternion.AngleAxis(angle, Vector3.forward);
+            q = Quaternion.AngleAxis(angle,Vector3.forward) ;
             //touchCenter.transform.rotation = Quaternion.Slerp(touchCenter.transform.rotation, q, Time.deltaTime * 10f);
             touchCenter.transform.rotation = q;
 
@@ -73,13 +103,13 @@ public class TouchControlsScript : MonoBehaviour
 
 
             CalculateSpeed();
-            MovePlayer();
+            //MovePlayer();
         }
 
         if (Input.GetMouseButtonUp(0))
         {
             speed = 0;
-            speedNow = 0;
+            //speedNow = 0;
 
             //zero floats
         }
@@ -97,7 +127,7 @@ public class TouchControlsScript : MonoBehaviour
         turnAngles.Insert(0, rotAngle.z);
         turnAngles.RemoveAt(2);
         rot = touchCenter.transform.localRotation;
-        turnSize.Insert(0, turnAngles[0] * 1000 - turnAngles[1] * 1000);
+        turnSize.Insert(0, turnAngles[0] * ControlEffect - turnAngles[1] * ControlEffect);
         turnSize.RemoveAt(10);
 
 
@@ -113,8 +143,16 @@ public class TouchControlsScript : MonoBehaviour
 
 
     void MovePlayer() {
-        playerRb.AddTorque(20*speedNow, ForceMode2D.Force);
-        playerRb.angularVelocity = 30f;
+        if (Mathf.Abs(playerRb.angularVelocity) > maxAngularVelocity)
+        {
+
+            playerRb.angularVelocity = maxAngularVelocity;
+
+
+        }
+        playerRb.AddTorque(speedNow*20, ForceMode2D.Force);
+        //playerRb.angularVelocity = 60f;
+        Debug.Log(playerRb.angularVelocity);
     }
 
 

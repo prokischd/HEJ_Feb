@@ -188,7 +188,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.7075472, g: 0.39716092, b: 0.47319177, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -260,7 +260,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 576960059}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.13384223, y: -0.085003376, z: -5.792342}
+  m_LocalPosition: {x: 0.13384223, y: -1.06, z: -5.792342}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 832757965}
@@ -280,6 +280,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eed428a88076d4b858ab8ff9f76f4ced, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxCenreDistance: 0.1
+  maxAngularVelocity: 300
+  ControlEffect: 800
   speedNow: 0
   turnAngles: []
   turnSize: []
@@ -342,7 +345,7 @@ DistanceJoint2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 673113461}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_EnableCollision: 0
   m_ConnectedRigidBody: {fileID: 832757962}
@@ -388,7 +391,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 673113461}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -491,7 +494,7 @@ Transform:
   m_GameObject: {fileID: 801042354}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.009, z: 0}
-  m_LocalScale: {x: 0.46380597, y: 0.46380597, z: 0.46380597}
+  m_LocalScale: {x: 0.64932835, y: 0.64932835, z: 0.64932835}
   m_Children: []
   m_Father: {fileID: 886883405}
   m_RootOrder: 0
@@ -733,7 +736,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.08776579
+  m_Radius: 0.13862231
 --- !u!212 &886883404
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -823,7 +826,7 @@ GameObject:
   - component: {fileID: 945462416}
   - component: {fileID: 945462415}
   m_Layer: 0
-  m_Name: robotAnim_3
+  m_Name: robotPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -836,13 +839,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 945462413}
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.134, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.179, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1165504384}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &945462415
 Animator:
   serializedVersion: 3
@@ -907,7 +910,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 10.306493, y: 9.3}
+  m_Size: {x: 1.0306493, y: 0.93}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1120,8 +1123,8 @@ MonoBehaviour:
       bevelSize: 0
       spriteIndex: 0
       corner: 1
-  m_SpriteShape: {fileID: 0}
-  m_FillPixelPerUnit: 100
+  m_SpriteShape: {fileID: 11400000, guid: 7d71979ac2a5d47af9b7ee556b26166a, type: 2}
+  m_FillPixelPerUnit: 600
   m_StretchTiling: 1
   m_SplineDetail: 16
   m_AdaptiveUV: 1
@@ -1174,9 +1177,9 @@ SpriteShapeRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Color: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_MaskInteraction: 0
-  m_ShapeTexture: {fileID: 0}
+  m_ShapeTexture: {fileID: 2800000, guid: e83fdf4fe1bc74662ac61007b54b494b, type: 3}
   m_Sprites: []
   m_LocalAABB:
     m_Center: {x: 0.11175299, y: 1.5742486, z: 0}
@@ -1219,7 +1222,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1165504383}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.088, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.63114, y: 0.63114, z: 0.63114}
   m_Children:
   - {fileID: 945462414}

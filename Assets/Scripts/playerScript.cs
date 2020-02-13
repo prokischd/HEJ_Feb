@@ -34,7 +34,9 @@ public class playerScript : MonoBehaviour
 
             vectorToTarget = colPos - transform.position;
             angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
+            //q = Quaternion.AngleAxis(angle, new Vector3(0, 0, 0));
             q = Quaternion.AngleAxis(angle, Vector3.forward);
+            q = Quaternion.Euler(0, 0, 90) * q;
             spriteObj.transform.rotation = Quaternion.Slerp(spriteObj.transform.rotation, q, Time.deltaTime * 4f);
         }
 
