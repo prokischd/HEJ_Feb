@@ -10,7 +10,7 @@ public class TouchControlsScript : MonoBehaviour
     public float maxCenreDistance = 0.1f;
     private Vector2 refCentrePos;
     public float maxAngularVelocity=120;
-    public float ControlEffect = 800;
+    public float ControlEffect = 1000;
 
     private Vector3 vectorToTarget;
     private float angle;
@@ -28,6 +28,7 @@ public class TouchControlsScript : MonoBehaviour
     private GameObject playerObj;
     private Rigidbody2D playerRb;
 
+    [SerializeField]
     private Animator playerAnim;
    
 
@@ -48,16 +49,18 @@ public class TouchControlsScript : MonoBehaviour
     {
         //playerRb.angularVelocity = 30f;
         MovePlayer();
+        SetPlayerAnimation();
     }
 
     void SetinitialReferences()
     {
+       
         cam = Camera.main;
         touchPos = transform.GetChild(0).gameObject;
         touchCenter = transform.GetChild(1).gameObject;
         playerObj = GameObject.Find("Player");
-        playerRb = playerObj.GetComponent<Rigidbody2D>();
         playerAnim = playerObj.transform.parent.transform.GetChild(1).GetChild(0).GetComponent<Animator>();
+        playerRb = playerObj.GetComponent<Rigidbody2D>();
         for (int i = 0; i < turnAngles.Count; i++)
         {
             turnAngles[i] = 0;
@@ -148,11 +151,43 @@ public class TouchControlsScript : MonoBehaviour
 
             playerRb.angularVelocity = maxAngularVelocity;
 
-
+            
         }
+        //SetPlayerAnimation();
         playerRb.AddTorque(speedNow*20, ForceMode2D.Force);
-        //playerRb.angularVelocity = 60f;
-        Debug.Log(playerRb.angularVelocity);
+        Debug.Log(playerRb.velocity);
+    }
+
+    void SetPlayerAnimation() {
+        if (playerRb.velocity.magnitude <= 0.1f )
+        {
+            playerAnim.SetBool("isWalking", false);
+            playerAnim.SetBool("isRunning", false);
+            playerAnim.SetBool("isBall", false);
+        }
+        else
+        {
+                 if (Mathf.Abs(playerRb.angularVelocity) > 0 && Mathf.Abs(playerRb.angularVelocity) < (maxAngularVelocity / 3))
+                {
+                    playerAnim.SetBool("isWalking", true);
+                    playerAnim.SetBool("isRunning", false);
+                    playerAnim.SetBool("isBall", false);
+                }
+                else if (Mathf.Abs(playerRb.angularVelocity) > (maxAngularVelocity / 3) && Mathf.Abs(playerRb.angularVelocity) < (maxAngularVelocity / 3)*2)
+                {
+                    playerAnim.SetBool("isRunning", true);
+                    playerAnim.SetBool("isBall", false);
+                    playerAnim.SetBool("isWalking", false);
+
+                }else if (Mathf.Abs(playerRb.angularVelocity) >= (maxAngularVelocity/3)*2)
+                {
+                    playerAnim.SetBool("isBall", true);
+
+                }
+        }
+        
+
+
     }
 
 
