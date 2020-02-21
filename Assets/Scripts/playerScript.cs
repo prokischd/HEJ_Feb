@@ -11,6 +11,7 @@ public class playerScript : MonoBehaviour
     private Quaternion q;
     private Vector3 colPos;
 
+    private bool isStanding;
 
     void Start()
     {
@@ -20,6 +21,7 @@ public class playerScript : MonoBehaviour
     void LateUpdate()
     {
         spriteObj.transform.position = transform.position;
+        ResetStanding();
     }
 
     void SetInitialReferences() {
@@ -30,6 +32,12 @@ public class playerScript : MonoBehaviour
     {
         if (col.gameObject.layer == 8)
         {
+
+            if (!isStanding)
+            {
+                isStanding = true;
+            }
+
             colPos = col.contacts[0].point;
 
             vectorToTarget = colPos - transform.position;
@@ -40,5 +48,13 @@ public class playerScript : MonoBehaviour
             spriteObj.transform.rotation = Quaternion.Slerp(spriteObj.transform.rotation, q, Time.deltaTime * 4f);
         }
 
+    }
+
+    void ResetStanding()
+    {
+        if (!isStanding)
+        {
+            spriteObj.transform.rotation = Quaternion.Slerp(spriteObj.transform.rotation, new Quaternion(0,0,0,0), Time.deltaTime * 4f);
+        }
     }
 }
