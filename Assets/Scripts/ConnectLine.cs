@@ -20,7 +20,7 @@ public class ConnectLine : MonoBehaviour
         }
     }
 
-    void LateUpdate()
+    void Update()
     {
         for (int i = 0; i < dotPoses.Length; i++)
         {

@@ -26,9 +26,11 @@ AnimationClip:
       value: {fileID: -8303618740871789694, guid: b084706f079b447f3a500ff52d55ee7e,
         type: 3}
     - time: 0.41666666
-      value: {fileID: 0}
+      value: {fileID: 3794314243180151095, guid: b084706f079b447f3a500ff52d55ee7e,
+        type: 3}
     - time: 0.5833333
-      value: {fileID: 0}
+      value: {fileID: 3794314243180151095, guid: b084706f079b447f3a500ff52d55ee7e,
+        type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -50,8 +52,8 @@ AnimationClip:
     pptrCurveMapping:
     - {fileID: -775548419937944197, guid: b084706f079b447f3a500ff52d55ee7e, type: 3}
     - {fileID: -8303618740871789694, guid: b084706f079b447f3a500ff52d55ee7e, type: 3}
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: 3794314243180151095, guid: b084706f079b447f3a500ff52d55ee7e, type: 3}
+    - {fileID: 3794314243180151095, guid: b084706f079b447f3a500ff52d55ee7e, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
@@ -76,18 +78,4 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events:
-  - time: 0
-    functionName: SetBallSpriteFalse
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.41666666
-    functionName: SetBallSpriteTrue
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
+  m_Events: []

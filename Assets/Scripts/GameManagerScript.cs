@@ -4,15 +4,28 @@ using UnityEngine;
 
 public class GameManagerScript : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public delegate void CanControl(bool canCont);
+    public delegate void lightControl(float ratio);
+
+    public event CanControl myCanContol;
+    public event lightControl myLightControl;
+
+    public void CallMyCanControl(bool canCont)
     {
-        
+        if (myCanContol != null)
+        {
+            myCanContol(canCont);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void CallMyLightControl(float ratio)
     {
-        
+        if (myCanContol != null)
+        {
+            myLightControl(ratio);
+        }
     }
+
+
+
 }
