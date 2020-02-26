@@ -10,6 +10,7 @@ public class TouchControlsScript : MonoBehaviour
     private GameObject energyGroup;
     private float time;
     public float energySpawnOffset = 20f;
+    private float camFloat;
 
     private GameObject touchPos;
     private GameObject touchCenter;
@@ -19,7 +20,7 @@ public class TouchControlsScript : MonoBehaviour
     private float speedVelocity=4;
     public float maxSpeedVelocity = 7f;
     public float minSpeedVelocity = 4f;
-
+    private ParticleSystem fingerParticle;
 
     private float goStrength = 30;
     public float accelartion = 5;
@@ -76,7 +77,7 @@ public class TouchControlsScript : MonoBehaviour
     void FixedUpdate()
     {
         //playerRb.angularVelocity = 30f;
-
+        SetCameraSize();
         //MovePlayer();
         SetPlayerAnimation();
         if (canControl)
@@ -89,11 +90,11 @@ public class TouchControlsScript : MonoBehaviour
     {
         energyGroup = new GameObject();
 
-
         gameManagerMaster = GameObject.Find("GameManager").GetComponent<GameManagerScript>();
         speedVelocity = minSpeedVelocity;
         cam = Camera.main;
         touchPos = transform.GetChild(0).gameObject;
+        fingerParticle = touchPos.GetComponent<ParticleSystem>();
         touchCenter = transform.GetChild(1).gameObject;
         playerObj = GameObject.Find("Player");
         playerAnim = playerObj.transform.parent.transform.GetChild(1).GetChild(0).GetComponent<Animator>();
@@ -151,6 +152,7 @@ public class TouchControlsScript : MonoBehaviour
             speed = speedNow;
             
             isMove = true;
+            playerAnim.SetBool("isBall", false);
         }
             if (Input.GetMouseButton(0))
         {
@@ -276,26 +278,53 @@ public class TouchControlsScript : MonoBehaviour
     }
 
     void SetPlayerAnimation() {
-        if (speedNow < -0.1f)
+        if (isMove)
         {
-            if (turnFloat != -1)
+            if (speedNow < 0)
             {
-                turnFloat = -1;
-                playerObj.transform.localScale = new Vector3(turnFloat * playerObj.transform.localScale.x, playerObj.transform.localScale.y, 1);
-                playerAnim.transform.localScale = new Vector3(turnFloat * playerAnim.transform.localScale.x, playerAnim.transform.localScale.y, 1);
+                if (turnFloat != -1)
+                {
+                    turnFloat = -1;
+                    //playerObj.transform.localScale = new Vector3(turnFloat * playerObj.transform.localScale.x, playerObj.transform.localScale.y, 1);
+                    playerAnim.transform.localScale = new Vector3(turnFloat * playerAnim.transform.localScale.x, playerAnim.transform.localScale.y, 1);
 
+                }
+            }
+            //else if(speedNow > 0.1f )
+            else
+            {
+                if (turnFloat != 1)
+                {
+                    turnFloat = 1;
+                    //                playerObj.transform.localScale = new Vector3(turnFloat, playerObj.transform.localScale.y, 1);
+                    playerAnim.transform.localScale = new Vector3(-turnFloat * playerAnim.transform.localScale.x, playerAnim.transform.localScale.y, 1);
+
+                }
             }
         }
-        else if(speedNow > 0.1f )
-        {
-            if(turnFloat != 1)
+        else{
+            if (playerRb.velocity.x > 0)
             {
-                turnFloat = 1;
-                playerObj.transform.localScale = new Vector3(turnFloat * playerObj.transform.localScale.x, playerObj.transform.localScale.y, 1);
-                playerAnim.transform.localScale = new Vector3(turnFloat * playerAnim.transform.localScale.x, playerAnim.transform.localScale.y, 1);
+                if (turnFloat != -1)
+                {
+                    turnFloat = -1;
+                    //playerObj.transform.localScale = new Vector3(turnFloat * playerObj.transform.localScale.x, playerObj.transform.localScale.y, 1);
+                    playerAnim.transform.localScale = new Vector3(turnFloat * playerAnim.transform.localScale.x, playerAnim.transform.localScale.y, 1);
 
+                }
+            }
+            else
+            {
+                if (turnFloat != 1)
+                {
+                    turnFloat = 1;
+                    //                playerObj.transform.localScale = new Vector3(turnFloat, playerObj.transform.localScale.y, 1);
+                    playerAnim.transform.localScale = new Vector3(-turnFloat * playerAnim.transform.localScale.x, playerAnim.transform.localScale.y, 1);
+
+                }
             }
         }
+        
 
         if (playerRb.velocity.magnitude <= 0.1f )
         {
@@ -317,7 +346,7 @@ public class TouchControlsScript : MonoBehaviour
                     playerAnim.SetBool("isBall", false);
                     playerAnim.SetBool("isWalking", false);
 
-                }else if (Mathf.Abs(playerRb.velocity.magnitude) >= (speedVelocity/4)*2)
+                }else if (Mathf.Abs(playerRb.velocity.magnitude) >= (speedVelocity/4)*2 && !isMove)
                 {
                     playerAnim.SetBool("isBall", true);
 
@@ -352,5 +381,18 @@ public class TouchControlsScript : MonoBehaviour
     //        time = 0;
     //    }
     //}
+
+    private float refCamFloat;
+    private float sizeFloat;
+
+    void SetCameraSize() {
+        camFloat = playerRb.velocity.magnitude/3 + 1;
+        camFloat = Mathf.Clamp(camFloat, 1, 2.1f);
+        sizeFloat= Mathf.SmoothDamp(cam.orthographicSize, camFloat, ref refCamFloat, 1);
+        cam.orthographicSize = sizeFloat;
+        fingerParticle.startSize = sizeFloat*0.03f;
+
+       // cam.orthographicSize = playerRb.velocity.magnitude + 1;
+    }
 
 }

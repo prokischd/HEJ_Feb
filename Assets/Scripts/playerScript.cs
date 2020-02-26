@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class playerScript : MonoBehaviour
@@ -11,6 +12,11 @@ public class playerScript : MonoBehaviour
     private Quaternion q;
     private Vector3 colPos;
     private Rigidbody2D myBody;
+    private AudioManager audioManager;
+    public float pitchCounter=3;
+    private float coinTimeOffset=0.5f;
+    public float coinTime;
+    
 
     public RaycastHit2D hit;
 
@@ -27,36 +33,15 @@ public class playerScript : MonoBehaviour
     {
         DoRaycasting();
         spriteObj.transform.position = transform.position;
-        
+        CountCoins();
     }
 
     void SetInitialReferences() {
+        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         myBody = GetComponent<Rigidbody2D>();
         gameManagerScript = GameObject.Find("GameManager").GetComponent<GameManagerScript>();
         spriteObj = transform.parent.GetChild(1).gameObject;
     }
-
-    //void OnCollisionStay2D(Collision2D col)
-    //{
-    //    if (col.gameObject.layer == 8)
-    //    {
-
-    //        if (!isStanding)
-    //        {
-    //            isStanding = true;
-    //        }
-
-    //        colPos = col.contacts[0].point;
-
-    //        vectorToTarget = colPos - transform.position;
-    //        angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
-    //        //q = Quaternion.AngleAxis(angle, new Vector3(0, 0, 0));
-    //        q = Quaternion.AngleAxis(angle, Vector3.forward);
-    //        q = Quaternion.Euler(0, 0, 90) * q;
-    //        spriteObj.transform.rotation = Quaternion.Slerp(spriteObj.transform.rotation, q, Time.deltaTime * 4f);
-    //    }
-
-    //}
 
     public float distance = 3f;
 
@@ -117,6 +102,34 @@ public class playerScript : MonoBehaviour
         }
     }
 
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.layer == 11)
+        {
+            Debug.Log("coin");
+            col.GetComponent<coinScript>().PlayerTouch();
+            audioManager.PlayPitch("Coin", pitchCounter);
+            coinTime = 0;
+            pitchCounter -= 0.4f;
+            pitchCounter = Mathf.Clamp(pitchCounter, 0.8f, 3f);
+
+        }
+    }
+
+    void CountCoins() {
+        if (coinTime <= coinTimeOffset)
+        {
+            coinTime += Time.deltaTime;
+        }
+        if (coinTime >= coinTimeOffset)
+        {
+
+            pitchCounter = 3;
+            gameManagerScript.CallMyCoinReset();
+            
+        }
+    }
 
 
 }
