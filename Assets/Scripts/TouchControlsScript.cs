@@ -50,6 +50,12 @@ public class TouchControlsScript : MonoBehaviour
     private float turnFloat;
 
 
+    public float maxSpeedDif;
+
+    private GameObject speedPin;
+    public Quaternion[] pinTransforms;
+
+
     void OnEnable()
     {
         SetinitialReferences();
@@ -80,10 +86,13 @@ public class TouchControlsScript : MonoBehaviour
         SetCameraSize();
         //MovePlayer();
         SetPlayerAnimation();
+        SmoothenMaxSpeed();
+
         if (canControl)
         {
             MoveComparedToGround();
         }
+        ShowSpeedUI();
     }
 
     void SetinitialReferences()
@@ -108,9 +117,19 @@ public class TouchControlsScript : MonoBehaviour
             turnSize.Add(0);
         }
 
+
+        gameManagerMaster.CallMyLightControl(0);
+        maxSpeedDif = 0;
+        goStrength = minSpeedVelocity;
+        isMove = false;
+        speed = 0;
+        speedNow = 0;
+        rotAngle = 0;
+        rot = new Quaternion(0, 0, 0, 0);
+        speedPin = GameObject.Find("Speed_Pin");
     }
 
-  
+
     void MoveComparedToGround()
     {
         if (isMove)
@@ -119,7 +138,8 @@ public class TouchControlsScript : MonoBehaviour
             //playerRb.AddForce(Vector3.right * (-goStrength * speedNow),ForceMode2D.Force);
             //playerRb.velocity = playerAnim.gameObject.transform.right*-20*speedVelocity * speedNow*Time.deltaTime;
 
-            playerRb.velocity = Vector3.ClampMagnitude(playerRb.velocity, speedVelocity);
+            //playerRb.velocity = Vector3.ClampMagnitude(playerRb.velocity, speedVelocity);
+            playerRb.velocity = Vector3.ClampMagnitude(playerRb.velocity, (speedVelocity+maxSpeedDif));
 
             gameManagerMaster.CallMyLightControl(playerRb.velocity.magnitude / speedVelocity);
 
@@ -128,6 +148,14 @@ public class TouchControlsScript : MonoBehaviour
        
 
 
+    }
+
+    void SmoothenMaxSpeed() {
+        if (maxSpeedDif > 0 && isMove)
+        {
+            maxSpeedDif -= 1f * Time.deltaTime;
+            maxSpeedDif =Mathf.Clamp(maxSpeedDif,0,maxSpeedDif);
+        }
     }
 
 
@@ -149,6 +177,10 @@ public class TouchControlsScript : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            maxSpeedDif = playerRb.velocity.magnitude - speedVelocity;
+            maxSpeedDif = Mathf.Clamp(maxSpeedDif, 0, maxSpeedDif);
+
+
             speed = speedNow;
             
             isMove = true;
@@ -174,7 +206,7 @@ public class TouchControlsScript : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             gameManagerMaster.CallMyLightControl(0);
-
+            maxSpeedDif = 0;
             goStrength = minSpeedVelocity;
             isMove = false;
             speed = 0;
@@ -234,7 +266,7 @@ public class TouchControlsScript : MonoBehaviour
             {
                 moveRight = false;
                 goStrength = minSpeedVelocity;
-                playerRb.velocity = new Vector3(0, playerRb.velocity.y, 0);
+                //playerRb.velocity = new Vector3(0, playerRb.velocity.y, 0);
             }
             goStrength += accelartion*Time.deltaTime;
             goStrength = Mathf.Clamp(goStrength, minSpeedVelocity, maxSpeedVelocity);
@@ -244,7 +276,7 @@ public class TouchControlsScript : MonoBehaviour
             {
                 moveRight = true;
                 goStrength = minSpeedVelocity;
-                playerRb.velocity = new Vector3(0, playerRb.velocity.y, 0);
+                //playerRb.velocity = new Vector3(0, playerRb.velocity.y, 0);
             }
             goStrength += accelartion*Time.deltaTime;
             goStrength = Mathf.Clamp(goStrength, minSpeedVelocity, maxSpeedVelocity);
@@ -264,18 +296,18 @@ public class TouchControlsScript : MonoBehaviour
     }
 
 
-    void MovePlayer() {
-        if (Mathf.Abs(playerRb.angularVelocity) > speedVelocity)
-        {
+    //void MovePlayer() {
+    //    if (Mathf.Abs(playerRb.angularVelocity) > speedVelocity)
+    //    {
 
-            playerRb.angularVelocity = speedVelocity;
+    //        playerRb.angularVelocity = speedVelocity;
 
             
-        }
-        //SetPlayerAnimation();
-        playerRb.AddTorque(speedNow*20, ForceMode2D.Force);
-        //Debug.Log(playerRb.velocity.magnitude);
-    }
+    //    }
+    //    //SetPlayerAnimation();
+    //    playerRb.AddTorque(speedNow*20, ForceMode2D.Force);
+    //    //Debug.Log(playerRb.velocity.magnitude);
+    //}
 
     void SetPlayerAnimation() {
         if (isMove)
@@ -393,6 +425,11 @@ public class TouchControlsScript : MonoBehaviour
         fingerParticle.startSize = sizeFloat*0.03f;
 
        // cam.orthographicSize = playerRb.velocity.magnitude + 1;
+    }
+
+    void ShowSpeedUI() {
+        float offset = playerRb.velocity.magnitude / (speedVelocity*2);
+        speedPin.transform.rotation = Quaternion.Lerp(pinTransforms[0], pinTransforms[1], offset);
     }
 
 }

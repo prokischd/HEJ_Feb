@@ -25,6 +25,8 @@ public class CamerFollowScript : MonoBehaviour
     void SetInitialReferences() {
         playerObj = GameObject.Find("Player");
         gameManager = GameObject.Find("GameManager").GetComponent<GameManagerScript>();
+        transform.position = new Vector3(playerObj.transform.position.x, playerObj.transform.position.y, transform.position.z);
+
     }
 
 
