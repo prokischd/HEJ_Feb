@@ -28,7 +28,7 @@ public class AllLightControl : MonoBehaviour
     {
         if (lightNow != myLight.intensity)
         {
-            myLight.intensity = Mathf.SmoothDamp(myLight.intensity, lightNow, ref refFloat, 0.5f);
+            myLight.intensity = Mathf.SmoothDamp(myLight.intensity, lightNow, ref refFloat, 0.3f);
         }
     }
 
@@ -43,7 +43,7 @@ public class AllLightControl : MonoBehaviour
     void SetLightIntensity(float ratio)
     {
         //myLight.intensity=(ratio*lightMax);
-        lightNow = ratio;
+        lightNow = ratio*lightMax;
     }
 
 

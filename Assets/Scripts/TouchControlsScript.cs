@@ -134,14 +134,16 @@ public class TouchControlsScript : MonoBehaviour
     {
         if (isMove)
         {
+            //float pidForce = (-goStrength * speedNow) * ( (playerRb.velocity.magnitude+1)/ (speedVelocity + maxSpeedDif));
             playerRb.AddForce(playerAnim.gameObject.transform.right * (-goStrength * speedNow));
-            //playerRb.AddForce(Vector3.right * (-goStrength * speedNow),ForceMode2D.Force);
-            //playerRb.velocity = playerAnim.gameObject.transform.right*-20*speedVelocity * speedNow*Time.deltaTime;
+            //playerRb.AddForce(playerAnim.gameObject.transform.right * pidForce);
+
+
 
             //playerRb.velocity = Vector3.ClampMagnitude(playerRb.velocity, speedVelocity);
             playerRb.velocity = Vector3.ClampMagnitude(playerRb.velocity, (speedVelocity+maxSpeedDif));
 
-            gameManagerMaster.CallMyLightControl(playerRb.velocity.magnitude / speedVelocity);
+            gameManagerMaster.CallMyLightControl(playerRb.velocity.magnitude / (speedVelocity+maxSpeedDif));
 
             //Debug.Log(playerRb.velocity.magnitude);
         }
